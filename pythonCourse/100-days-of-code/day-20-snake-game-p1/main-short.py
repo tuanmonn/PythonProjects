@@ -9,28 +9,21 @@ screen.bgcolor("black")
 screen.title("Snake game")
 screen.tracer(0)
 
-square_list = []
-
 # Create the snake
-create_snake = Snake()
+snake = Snake()
+screen.listen()                         # start to listen to keystrokes
+screen.onkey(snake.up, "Up")            # listen to the event
+screen.onkey(snake.down, "Down")
+screen.onkey(snake.left, "Left")
+screen.onkey(snake.right, "Right")
+
 
 # Make the snake move
 game_is_on = True
 while game_is_on:
-    screen.update()
+    screen.update()                     # Refresh the screen
     time.sleep(0.1)
-    create_snake.move()
-
-
-
-
-
-
-
-
-
-
-
+    snake.move()
 
 screen.exitonclick()
 

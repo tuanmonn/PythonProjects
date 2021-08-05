@@ -33,8 +33,6 @@ while game_is_on:
     square_list[0].forward(20)
 
 
-
-
 # Brainstorm: how to make the snake move
 # while game_is_on:
 #     screen.update()
@@ -45,17 +43,6 @@ while game_is_on:
 #         if i != 0:
 #             square_pos = square_list[i-1].position()
 #             square_list[i].setpos(square_pos)
-
-
-
-
-
-
-
-
-
-
-
 
 screen.exitonclick()
 
