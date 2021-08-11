@@ -33,8 +33,8 @@ while game_is_on:
     if ball.distance(right_paddle) < 30 or ball.distance(left_paddle) < 30:
         ball.bounce()
 
-    if ball.ycor() > 200:
-        ball.bounce()
+    if ball.ycor() > 280 or ball.ycor() < -280:
+        ball.bounce_wall()
 
 
 
