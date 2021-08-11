@@ -8,6 +8,7 @@ class Ball(Turtle):
         self.penup()
         self.move_x = 10
         self.move_y = 10
+        self.move_speed = 0.1               # cannot use self.speed then increase it here...
 
     def move(self):
 
@@ -17,6 +18,15 @@ class Ball(Turtle):
 
     def bounce_wall(self):
         self.move_y *= -1
+
+    def bounce_paddle(self):
+        self.move_x *= -1
+        self.move_speed *= 0.9
+
+    def reset_game(self):
+        self.bounce_paddle()
+        self.move_speed = 0.1
+        self.goto(0,0)
 
 
 # -- my solution
