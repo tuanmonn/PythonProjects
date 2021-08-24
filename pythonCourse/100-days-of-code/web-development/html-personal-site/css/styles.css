@@ -1,0 +1,29 @@
+/************ TAG SELECTOR **************/
+body {
+  background-color: #C7FFD8;
+}
+
+hr {
+  border-color: #BBBBBB;
+  border-width: 5px;
+  border-style: dotted none none none;
+  width: 5%;
+}
+
+h1 {
+  color: #161D6F;
+}
+
+h3 {
+  color: #161D6F;
+}
+
+/************ CLASS SELECTOR **************/
+
+.meat {
+  background-color: green;
+}
+
+.vegie{
+  background-color: red;
+}
