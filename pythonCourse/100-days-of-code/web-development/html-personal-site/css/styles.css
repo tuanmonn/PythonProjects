@@ -10,7 +10,7 @@ hr {
   width: 5%;
 }
 
-h1 {
+h1:hover {
   color: #161D6F;
 }
 
@@ -27,3 +27,5 @@ h3 {
 .vegie{
   background-color: red;
 }
+
+/************ ID SELECTOR **************/
