@@ -58,7 +58,7 @@ for n in range(0, len(hotel_prices)-1):
         affordable_hotel_links.append(hotel_links[n])
 
 # Fill form
-for n in range(0, len(affordable_hotel_names)):
+for n in range(0, len(affordable_hotel_names)-1):
     fill_form.fill_form(affordable_hotel_names[n],affordable_hotel_prices[n],affordable_hotel_links[n],place_input)
 
 driver.quit()
