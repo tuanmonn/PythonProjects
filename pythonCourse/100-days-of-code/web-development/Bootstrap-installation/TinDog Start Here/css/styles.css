@@ -138,3 +138,49 @@ h3 {
   padding: 3% 2%;
 
 }
+
+
+@media (max-width: 1028px) {
+  .title-img {
+    position: static;
+    transform: rotate(0);
+    width: 100%;
+  }
+
+  #title {
+    text-align: center;
+  }
+}
+
+/* Footer section */
+#cta {
+  background-color: #ff4c68;
+  color: #fff;
+  text-align: center;
+  padding: 3% 30%;
+}
+
+
+.last-call {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.5rem;
+  line-height: 1.5;
+  font-weight: 900;
+}
+
+#footer {
+  text-align: center;
+  padding: 20px;
+}
+
+.download-btn-footer {
+  margin: 40px 10px;
+}
+
+.social-icons {
+  margin: 20px 10px;
+}
+
+.copyright {
+  color: gray;
+}
