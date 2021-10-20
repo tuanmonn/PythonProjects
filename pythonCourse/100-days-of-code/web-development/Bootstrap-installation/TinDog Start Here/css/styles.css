@@ -5,7 +5,7 @@
 }
 
 .container-fluid{
-  padding: 3% 15%
+  padding: 3% 15% 7%;
 }
 
 body {
@@ -62,8 +62,10 @@ h3 {
 
 /* Title image */
 .title-img {
-  width: 60%;
+  width: 18%;
   transform: rotate(25deg);
+  position: absolute;
+  right: 25%;
 }
 
 .benefits {
@@ -89,6 +91,9 @@ h3 {
 /* Features section */
 #features {
   padding: 7% 15%;
+  background-color: white;
+  position: relative;
+  z-index: 1;
 }
 
 /* Testimonials section */
