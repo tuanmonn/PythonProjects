@@ -1,36 +1,49 @@
 
-#title {
-  background-color: #ff4c68;
-  color: #fff;
-}
-
-.container-fluid{
-  padding: 3% 15% 7%;
-}
-
 body {
   font-family: 'Montserrat', sans-serif;
+  text-align: center;
 }
 
-h1 {
+h1, h2 {
   font-family: 'Montserrat', sans-serif;
-  font-size: 3.5rem;
-  line-height: 1.5;
-  font-weight: 900;
 }
 
-h2 {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 3.5rem;
-  line-height: 1.5;
-  font-weight: 700;
-}
 
 h3 {
   font-family: 'Ubuntu', sans-serif;
   font-weight: 500;
 }
 
+
+#title .container-fluid{
+  padding: 3% 15% 7%;
+  text-align: left;
+}
+
+.colored-section {
+  background-color: #ff4c68;
+  color: #fff;
+}
+
+.white-section {
+  background-color: white;
+}
+
+
+
+/* Headings */
+.big-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 3.5rem;
+  line-height: 1.5;
+  font-weight: 900;
+}
+
+.section-heading {
+  font-size: 3.5rem;
+  line-height: 1.5;
+  font-weight: 700;
+}
 
 /* Navigation bar */
 
@@ -83,15 +96,17 @@ h3 {
 }
 
 .feature-box {
-  text-align: center;
   padding: 5%;
 }
 
+.benefit-title {
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 500;
+}
 
 /* Features section */
 #features {
   padding: 7% 15%;
-  background-color: white;
   position: relative;
   z-index: 1;
 }
@@ -99,8 +114,6 @@ h3 {
 /* Testimonials section */
 #testimonials {
   background-color: #ef8172;
-  text-align: center;
-  color: #fff;
 }
 
 .testimonial-img {
@@ -113,11 +126,16 @@ h3 {
   padding: 7% 15%;
 }
 
+.testimonial-text {
+  font-size: 3.5rem;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
 
 /* Press section */
 #press {
   background-color: #ef8172;
-  text-align: center;
   padding-bottom: 3%
 }
 
@@ -130,13 +148,18 @@ h3 {
 /* Pricing section */
 #pricing {
   padding: 100px;
-  text-align: center;
 }
 
 
 .pricing-col {
   padding: 3% 2%;
 
+}
+
+.price-text {
+  font-size: 3.5rem;
+  line-height: 1.5;
+  font-weight: 700;
 }
 
 
@@ -147,29 +170,14 @@ h3 {
     width: 100%;
   }
 
-  #title {
-    text-align: center;
-  }
 }
 
 /* Footer section */
 #cta {
-  background-color: #ff4c68;
-  color: #fff;
-  text-align: center;
   padding: 3% 30%;
 }
 
-
-.last-call {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 2.5rem;
-  line-height: 1.5;
-  font-weight: 900;
-}
-
 #footer {
-  text-align: center;
   padding: 20px;
 }
 
