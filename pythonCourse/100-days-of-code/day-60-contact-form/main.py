@@ -10,7 +10,6 @@ author = "Tuanmonn"
 my_email = "test@gmail.com"
 my_password = "testPassword()"
 
-@app.route('/')
 def home():
     return render_template("index.html", blog_posts= blog_posts, author= author)
 
