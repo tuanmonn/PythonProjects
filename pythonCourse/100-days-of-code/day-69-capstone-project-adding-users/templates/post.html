@@ -12,7 +12,7 @@
             <h1>{{post.title}}</h1>
             <h2 class="subheading">{{post.subtitle}}</h2>
             <span class="meta">Posted by
-              <a href="#">{{post.author}}</a>
+              <a href="#">{{post.author.user_name}}</a>
               on {{post.date}}</span>
           </div>
         </div>
@@ -39,20 +39,18 @@
           <div class="col-lg-8 col-md-10 mx-auto comment">
               <ul class="commentList">
                 <li>
+                      {% for i in post.comments: %}
                     <div class="commenterImage">
-                      <img src="https://pbs.twimg.com/profile_images/744849215675838464/IH0FNIXk.jpg"/>
+                      <img src="{{ i.comment_author.user_email | gravatar }}"/>
                     </div>
                     <div class="commentText">
-                      {% for i in post.comment: %}
                         <p>{{i.text|safe}}</p>
-                      <span class="date sub-text">comment author name</span>
-                      {% endfor %}
+                      <span class="date sub-text">{{ i.comment_author.user_name }}</span>
                     </div>
+                  {% endfor %}
                 </li>
               </ul>
             </div>
-
-
           </div>
       </div>
     </div>

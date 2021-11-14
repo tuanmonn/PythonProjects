@@ -3,7 +3,6 @@ from flask import Flask, render_template, redirect, url_for, flash, request, abo
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
 from datetime import date
-
 from sqlalchemy import Integer, ForeignKey
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
@@ -13,9 +12,17 @@ from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 from flask_gravatar import Gravatar
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = '4sgXgurXxkMySCRKtZcHA7HzZldWvES7'
 ckeditor = CKEditor(app)
 Bootstrap(app)
+gravatar = Gravatar(app,
+                    size=100,
+                    rating='g',
+                    default='retro',
+                    force_default=False,
+                    force_lower=False,
+                    use_ssl=False,
+                    base_url=None)
 
 ##CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -27,7 +34,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 ##CONFIGURE TABLES
-
 class User(UserMixin, db.Model):
     __tablename__ = "User"
     UserMixin()
@@ -35,20 +41,21 @@ class User(UserMixin, db.Model):
     user_name = db.Column(db.String(250), nullable=False)
     user_password = db.Column(db.String(250))
     user_email = db.Column(db.String(250), nullable=False)
-    posts = relationship('BlogPost', backref="User")
-    comment = relationship('Comment', backref="User")
+    posts = relationship('BlogPost', back_populates="author")
+    comments = relationship('Comment', back_populates="comment_author")
+
 
 class BlogPost(db.Model):
     __tablename__ = "blog_posts"
     id = db.Column(db.Integer, primary_key=True)
-    author = db.Column(db.String(250), nullable=False)
     title = db.Column(db.String(250), unique=True, nullable=False)
     subtitle = db.Column(db.String(250), nullable=False)
     date = db.Column(db.String(250), nullable=False)
     body = db.Column(db.Text, nullable=False)
     img_url = db.Column(db.String(500))
-    author_id = db.Column(db.Integer, db.ForeignKey('User.id'))
-    comment = relationship('Comment', backref="BlogPost")
+    author_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    comments = relationship('Comment', back_populates="parent_post")
+    author = relationship('User', back_populates="posts")
 
 class Comment(db.Model):
     __tablename__ = "comments"
@@ -56,23 +63,10 @@ class Comment(db.Model):
     text = db.Column(db.String(1000), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('blog_posts.id'))
+    comment_author = relationship('User', back_populates="comments")
+    parent_post = relationship('BlogPost', back_populates="comments")
 
 db.create_all()
-
-## Create admin only once
-# admin = User(user_name= "admin", user_password= "123", user_email = "admin@gmail.com")
-# db.session.add(admin)
-# db.session.commit()
-
-## Create demo blog
-# post = BlogPost(author="Tuanmon", title="A simple blog post",
-#                 subtitle="nothing much",
-#                 body="hello this is my first blog post nice to meet you",
-#                 date="12/10/2021",
-#                 img_url="https://i.natgeofe.com/n/3861de2a-04e6-45fd-aec8-02e7809f9d4e/02-cat-training-NationalGeographic_1484324_square.jpg",
-#                 author_id=1)
-# db.session.add(post)
-# db.session.commit()
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -85,16 +79,15 @@ def get_all_posts():
                            logged_in=current_user.is_authenticated)
 
 
-@app.route('/register', methods=["GET","POST"])
+@app.route('/register', methods=["GET", "POST"])
 def register():
     form_register = RegisterForm()
-    form_login = LoginForm()
-    if request.method == "POST" and form_register.validate_on_submit():
-        if User.query.filter_by(user_email= form_register.email.data).first():
+    if form_register.validate_on_submit():
+        if User.query.filter_by(user_email=form_register.email.data).first():
             flash("This email is already registered. Log in instead!")
             return redirect(url_for('login'))
         else:
-            new_user = User(user_name= form_register.name.data,
+            new_user = User(user_name=form_register.name.data,
                             user_email=form_register.email.data,
                             user_password=form_register.password.data)
             db.session.add(new_user)
@@ -104,20 +97,18 @@ def register():
     return render_template("register.html", form=form_register)
 
 
-
-@app.route('/login', methods= ["GET","POST"])
+@app.route('/login', methods=["GET", "POST"])
 def login():
     form_login = LoginForm()
-    error = None
-    if request.method == "POST":
+    if form_login.validate_on_submit():
         if User.query.filter_by(user_email=form_login.email.data).first() and User.query.filter_by(user_password=form_login.password.data).first():
             login_user(User.query.filter_by(user_email=form_login.email.data).first())
             return redirect(url_for('get_all_posts'))
-        elif not User.query.filter_by(user_email=form_login.email.data):
-            error = "Wrong email son. Try again."
+        elif not User.query.filter_by(user_email=form_login.email.data).first():
+            flash("Wrong email son. Try again.")
         else:
-            error = "Wrong password son. Try again."
-    return render_template("login.html", form=form_login, error= error, logged_in=current_user.is_authenticated)
+            flash("Wrong password son. Try again.")
+    return render_template("login.html", form=form_login, logged_in=current_user.is_authenticated)
 
 
 @app.route('/logout')
@@ -130,56 +121,54 @@ def logout():
 def show_post(post_id):
     requested_post = BlogPost.query.get(post_id)
     form_comment = CommentForm()
-    all_comment = requested_post.comment
-    print(all_comment)
     if form_comment.validate_on_submit():
         if not current_user.is_authenticated:
             flash("You need to login or register to comment")
             return redirect(url_for('login'))
-
         # add new comment
         new_comment = Comment(text=form_comment.comment.data, user_id=current_user.id, post_id=requested_post.id)
         db.session.add(new_comment)
         db.session.commit()
-    return render_template("post.html", post=requested_post, form=form_comment)
+    return render_template("post.html", post=requested_post, form=form_comment, logged_in=current_user.is_authenticated)
 
 
 @app.route("/about")
 def about():
-    return render_template("about.html")
+    return render_template("about.html", logged_in = current_user.is_authenticated)
 
 
 @app.route("/contact")
 def contact():
-    return render_template("contact.html")
+    return render_template("contact.html", logged_in = current_user.is_authenticated)
+
 
 # Create decorator
 def admin_only(f):
     @wraps(f)
     def wrapper_function(*args, **kwargs):
-        if not current_user.is_authenticated:
+        if current_user.id != 1:
             return abort(403)
         return f(*args, **kwargs)
     return wrapper_function
 
-@app.route("/new-post", methods=["GET","POST"])
+
+@app.route("/new-post", methods=["GET", "POST"])
 @admin_only
 def add_new_post():
     form = CreatePostForm()
-    if request.method == "POST":
-        if form.validate_on_submit():
-            new_post = BlogPost(
-                title=form.title.data,
-                subtitle=form.subtitle.data,
-                body=form.body.data,
-                img_url=form.img_url.data,
-                author=current_user.user_name,
-                date=date.today().strftime("%B %d, %Y")
-            )
-            db.session.add(new_post)
-            db.session.commit()
-            return redirect(url_for("get_all_posts"))
-    return render_template("make-post.html", form=form)
+    if form.validate_on_submit():
+        new_post = BlogPost(
+            title=form.title.data,
+            subtitle=form.subtitle.data,
+            body=form.body.data,
+            img_url=form.img_url.data,
+            date=date.today().strftime("%B %d, %Y"),
+            author_id= current_user.id
+        )
+        db.session.add(new_post)
+        db.session.commit()
+        return redirect(url_for("get_all_posts"))
+    return render_template("make-post.html", form=form, logged_in = current_user.is_authenticated)
 
 
 @app.route("/edit-post/<int:post_id>")
@@ -202,16 +191,15 @@ def edit_post(post_id):
         db.session.commit()
         return redirect(url_for("show_post", post_id=post.id))
 
-    return render_template("make-post.html", form=edit_form)
-
+    return render_template("make-post.html", form=edit_form, logged_in = current_user.is_authenticated)
 
 @app.route("/delete/<int:post_id>")
+@admin_only
 def delete_post(post_id):
     post_to_delete = BlogPost.query.get(post_id)
     db.session.delete(post_to_delete)
     db.session.commit()
-    return redirect(url_for('get_all_posts'))
-
+    return redirect(url_for('get_all_posts'), logged_in = current_user.is_authenticated)
 
 if __name__ == "__main__":
     app.run(debug=True)
