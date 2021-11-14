@@ -1,7 +1,9 @@
 {% include "header.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
   <!-- Page Header -->
   <header class="masthead" style="background-image: url('{{post.img_url}}')">
+    {{ ckeditor.load() }}
     <div class="overlay"></div>
     <div class="container">
       <div class="row">
@@ -30,7 +32,8 @@
               <a class="btn btn-primary float-right" href="{{url_for('edit_post', post_id=post.id)}}">Edit Post</a>
               </div>
             {% endif %}
-
+          {{ ckeditor.config(name="comment") }}
+          {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
 
 <!--           Comments Area -->
           <div class="col-lg-8 col-md-10 mx-auto comment">
@@ -40,8 +43,10 @@
                       <img src="https://pbs.twimg.com/profile_images/744849215675838464/IH0FNIXk.jpg"/>
                     </div>
                     <div class="commentText">
-                      <p>Some comment</p>
+                      {% for i in post.comment: %}
+                        <p>{{i.text|safe}}</p>
                       <span class="date sub-text">comment author name</span>
+                      {% endfor %}
                     </div>
                 </li>
               </ul>

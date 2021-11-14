@@ -23,9 +23,15 @@
     <div class="row">
 
       <div class="col-lg-8 col-md-10 mx-auto content">
-        {% if error %}
-          <p class="error"> Error: {{error}}</p>
-        {% endif %}
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class=flashes class="error">
+            {% for message in messages %}
+              <p>{{ message }}</p>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
         {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
       </div>
     </div>
